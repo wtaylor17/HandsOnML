@@ -2,12 +2,10 @@ import os
 import tarfile
 from six.moves import urllib
 import pandas as pd
-from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import Imputer, LabelBinarizer, StandardScaler
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -132,17 +130,15 @@ num_pipeline = Pipeline([
 	('std_scaler', StandardScaler())
 ])
 
-# pipeline for categorical data
-cat_pipeline = Pipeline([('binarizer', PipeLineBinarizer(cat_attributes))])
-
 # pipeline that does it all
-full_pipeline = FeatureUnion(transformer_list=[('num', num_pipeline), ('cat', cat_pipeline)])
+data_pipeline = FeatureUnion(transformer_list=[('num_pipeline', num_pipeline), 
+					('cat_binarizer', PipeLineBinarizer(cat_attributes))])
 
 # run data through full pipeline
-train_X_prepared = full_pipeline.fit_transform(train_X)
-test_X_prepared = full_pipeline.fit_transform(test_X)
+train_X_prepared = data_pipeline.fit_transform(train_X)
+test_X_prepared = data_pipeline.fit_transform(test_X)
 
-# perform K-fold cross validation
+# perform K-fold cross validation on DTR
 # splits training set into K distinct folds
 # trains and evaluates model K times
 # picking one fold for validation and the other K-1 for training
