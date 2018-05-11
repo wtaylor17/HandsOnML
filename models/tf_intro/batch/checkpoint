@@ -1,0 +1,2 @@
+model_checkpoint_path: "linreg.ckpt"
+all_model_checkpoint_paths: "linreg.ckpt"
