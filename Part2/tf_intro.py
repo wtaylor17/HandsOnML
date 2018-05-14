@@ -31,8 +31,15 @@ def perform_batch_gd():
 	housing_data_biased = np.c_[np.ones((m, 1)), housing.data]
 	trainX, trainY, testX, testY = shuffle(housing_data_biased, housing.target)
 	batch_gd(trainX, trainY)
+	
+def perform_stochastic_gd():
+	housing = fetch_california_housing()
+	m, n = housing.data.shape
+	housing_data_biased = np.c_[np.ones((m, 1)), housing.data]
+	trainX, trainY, testX, testY = shuffle(housing_data_biased, housing.target)
+	stochastic_gd(trainX, trainY)
 
-def test_gd(path='batch'):
+def test_gd(type='batch', save=True):
 	housing = fetch_california_housing()
 	m, n = housing.data.shape
 	housing_data_biased = np.c_[np.ones((m, 1)), housing.data]
@@ -49,16 +56,10 @@ def test_gd(path='batch'):
 	mse = tf.reduce_mean(tf.square(error), name='mse')
 	
 	with tf.Session() as sess:
-		saver.restore(sess, MODEL_ROOT + path + '/linreg.ckpt')
-		file_writer = tf.summary.FileWriter(LOG_ROOT + path + '/test', sess.graph)
-		
-		print('ERROR OF PREDICTIONS:', np.sqrt(sess.run(mse)))
-		file_writer.close()
-		
-		
-def perform_stochastic_gd():
-	housing = fetch_california_housing()
-	m, n = housing.data.shape
-	housing_data_biased = np.c_[np.ones((m, 1)), housing.data]
-	trainX, trainY, testX, testY = shuffle(housing_data_biased, housing.target)
-	stochastic_gd(trainX, trainY)
+		saver.restore(sess, MODEL_ROOT + type + '/linreg.ckpt')
+		if save:
+			file_writer = tf.summary.FileWriter(LOG_ROOT + type + '/test', sess.graph)
+			print('ERROR OF PREDICTIONS:', np.sqrt(sess.run(mse)))
+			file_writer.close()
+		else:
+			print('ERROR OF PREDICTIONS:', np.sqrt(sess.run(mse)))
