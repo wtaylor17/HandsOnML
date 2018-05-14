@@ -25,8 +25,7 @@ basic_cell = tf.contrib.rnn.BasicRNNCell(num_units=n_neurons)
 outputs, states = tf.nn.dynamic_rnn(basic_cell, X, dtype=tf.float32)
 
 logits = fully_connected(states, n_outputs, activation_fn=None)
-xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-									labels=y, logits=logits)
+xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
 
 loss = tf.reduce_mean(xentropy)
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
