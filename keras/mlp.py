@@ -1,7 +1,7 @@
 from keras import Sequential
 from keras.layers import Dense, Dropout, Layer
 from keras.callbacks import TensorBoard, ModelCheckpoint
-from keras.utils import to_categorical, plot_model
+from keras.utils import plot_model
 from keras.metrics import categorical_accuracy
 from keras import backend as K
 from keras.layers import GRU
@@ -55,7 +55,6 @@ class NNClassifier:
 		Public feilds are layer_names (names of layers in MLP) and model (Sequential object)
 		"""
 		
-		self.load = load
 		self.__callbacks = list()
 		
 		if save_on_exit:
