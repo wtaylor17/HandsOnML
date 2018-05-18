@@ -11,6 +11,8 @@ We will use cells of 150 recurrent neurons, plus a fully connected layer of
 layer.
 """
 
+LOG_PATH = 'logs/sequences'
+
 n_steps = 28
 n_inputs = 28
 n_neurons = 150
@@ -35,6 +37,9 @@ training_op = optimizer.minimize(loss)
 correct = tf.nn.in_top_k(logits, y, 1)
 accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
 
+train_accuracy = tf.summary.scalar('train_accuracy', accuracy)
+test_accuracy = tf.summary.scalar('test_accuracy', accuracy)
+
 init = tf.global_variables_initializer()
 
 mnist = input_data.read_data_sets('/tmp/data/')
@@ -47,11 +52,17 @@ batch_size = 150
 
 with tf.Session() as sess:
 	init.run()
+	writer = tf.summary.FileWriter(LOG_PATH, sess.graph)
 	for epoch in range(n_epochs):
 		for iteration in range(mnist.train.num_examples // batch_size):
 			X_batch, y_batch = mnist.train.next_batch(batch_size)
 			X_batch = X_batch.reshape((-1, n_steps, n_inputs))
 			sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
 		acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
+		summary_train = train_accuracy.eval(feed_dict={X: X_batch, y: y_batch})
 		acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
+		summary_test = test_accuracy.eval(feed_dict={X: X_test, y: y_test})
 		print(epoch, 'Train accuracy', acc_train, 'Test accuracy', acc_test)
+		writer.add_summary(summary_train, epoch)
+		writer.add_summary(summary_test, epoch)
+	writer.close()
