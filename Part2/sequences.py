@@ -27,8 +27,7 @@ basic_cell = tf.contrib.rnn.BasicRNNCell(num_units=n_neurons)
 outputs, states = tf.nn.dynamic_rnn(basic_cell, X, dtype=tf.float32)
 
 logits = fully_connected(states, n_outputs, activation_fn=None)
-xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-									labels=y, logits=logits)
+xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
 
 loss = tf.reduce_mean(xentropy)
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
@@ -61,8 +60,12 @@ with tf.Session() as sess:
 		acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
 		summary_train = train_accuracy.eval(feed_dict={X: X_batch, y: y_batch})
 		acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
+<<<<<<< HEAD
 		summary_test = test_accuracy.eval(feed_dict={X: X_test, y: y_test})
 		print(epoch, 'Train accuracy', acc_train, 'Test accuracy', acc_test)
 		writer.add_summary(summary_train, epoch)
 		writer.add_summary(summary_test, epoch)
 	writer.close()
+=======
+		print(epoch, 'Train accuracy', acc_train, 'Test accuracy', acc_test)
+>>>>>>> c0bfb00b7416593ec04a31f069d25d995bfced16
